@@ -1,46 +1,31 @@
+import { useEffect, useState } from "react"
 import MainBalance from './MainBalance'
 import NewTransactionButton from './NewTransactionButton'
 import TransactionItem from './TransactionItem'
+import { getLastTransactions } from "../services/firebaseService"
+import type { Transaction } from "../types/transaction"
 
 const Dashboard = () => {
-    const recentTransactions = [
-        {
-            id: 1,
-            title: "Supermercado",
-            amount: -45.5,
-            category: "Alimentación",
-            date: "Hoy",
-            type: "expense",
-            color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-        },
-        {
-            id: 2,
-            title: "Salario",
-            amount: 2500.0,
-            category: "Trabajo",
-            date: "Ayer",
-            type: "income",
-            color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-        },
-        {
-            id: 3,
-            title: "Netflix",
-            amount: -12.99,
-            category: "Entretenimiento",
-            date: "2 días",
-            type: "expense",
-            color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-        },
-        {
-            id: 4,
-            title: "Freelance",
-            amount: 350.0,
-            category: "Trabajo",
-            date: "3 días",
-            type: "income",
-            color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-        },
-    ]
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+    const [loading, setLoading] = useState(true)
+
+
+    useEffect(() => {
+        async function fetchTransactions() {
+            setLoading(true)
+            try {
+                const data = await getLastTransactions(5)
+                setTransactions(data)
+            } catch (error) {
+                console.error("Error al obtener transacciones:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchTransactions()
+    }, [])
+
+    console.log(loading)
 
     return (
         <div className='container mx-auto px-4'>
@@ -58,7 +43,7 @@ const Dashboard = () => {
                     <p className='text-sm dark:text-gray-400'>Ver todas</p>
                 </div>
                 <div>
-                    {recentTransactions.map((transaction, index) => (
+                    {transactions.map((transaction, index) => (
                         <div
                             key={`${transaction.id}-${index}`}
                         >

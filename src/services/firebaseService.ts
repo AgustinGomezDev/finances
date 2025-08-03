@@ -9,7 +9,8 @@ import {
     addDoc,
     updateDoc,
     deleteDoc,
-    Timestamp
+    Timestamp,
+    limit
 } from "firebase/firestore";
 import type { Transaction } from "../types/transaction"
 
@@ -18,6 +19,38 @@ const transactionsRef = collection(db, "transactions")
 // 🔹 Obtener todas las transacciones ordenadas por fecha
 export async function getAllTransactions(): Promise<Transaction[]> {
   const q = query(collection(db, "transactions"), orderBy("date", "desc"))
+  const snapshot = await getDocs(q)
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data()
+
+    let dateString = ""
+    if (data.date instanceof Timestamp) {
+      dateString = data.date.toDate().toISOString()
+    } else if (typeof data.date === "string") {
+      dateString = data.date
+    } else {
+      console.warn(`Transacción sin campo 'date' válido:`, doc.id, data)
+    }
+
+    return {
+      id: doc.id,
+      title: data.title,
+      amount: data.amount,
+      category: data.category,
+      date: dateString,
+      type: data.type,
+      color: data.color ?? undefined,
+    }
+  })
+}
+
+export async function getLastTransactions(limitNumber = 5): Promise<Transaction[]> {
+  const q = query(
+    collection(db, "transactions"),
+    orderBy("date", "desc"),
+    limit(limitNumber)
+  )
   const snapshot = await getDocs(q)
 
   return snapshot.docs.map((doc) => {

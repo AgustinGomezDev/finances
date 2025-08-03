@@ -38,6 +38,7 @@ function Transacciones() {
     fetchTransactions()
   }, [])
   
+  console.log(loading)
 
   const categories = ["Todas", "Alimentación", "Trabajo", "Entretenimiento", "Transporte"]
 
