@@ -55,15 +55,11 @@ export const getTransactionById = async (id: string) => {
 }
 
 // 🔹 Crear nueva transacción
-export const addTransaction = async (data: {
-  type: "income" | "expense",
-  amount: number,
-  category: string,
-  note?: string
-}) => {
-  return await addDoc(transactionsRef, {
+export async function addTransaction(data: Omit<Transaction, "id">) {
+  await addDoc(collection(db, "transactions"), {
     ...data,
-    createdAt: Timestamp.now()
+    date: Timestamp.fromDate(new Date(data.date)),
+    createdAt: Timestamp.now(),
   })
 }
 

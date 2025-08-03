@@ -1,12 +1,14 @@
 import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, DollarSign, Tag, FileText, Calendar } from "lucide-react"
 import { useState } from "react"
+import { addTransaction } from "../services/firebaseService"
 
 const NewTransaction = () => {
   const [transactionType, setTransactionType] = useState<"income" | "expense">("expense")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState("")
   const [note, setNote] = useState("")
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0])
 
   const categories = {
     expense: ["Alimentación", "Transporte", "Entretenimiento", "Salud", "Compras", "Servicios", "Otros"],
@@ -15,6 +17,21 @@ const NewTransaction = () => {
 
   const navigate = useNavigate()
 
+  const handleSave = async () => {
+    if (!amount || !category) return alert("Completa todos los campos obligatorios.")
+
+    await addTransaction({
+      title: note || "(Sin nota)",
+      amount: parseFloat(amount),
+      category,
+      date,
+      type: transactionType,
+      color: transactionType === "income" ? "bg-emerald-500" : "bg-red-500",
+    })
+
+    navigate({ to: "/" })
+  }
+
   return (
     <div className="min-h-screen">
       <div className="px-4 py-4 max-w-7xl mx-auto">
@@ -22,11 +39,11 @@ const NewTransaction = () => {
         {/* HEADER */}
         <div className="flex items-center justify-center">
           <button
-              onClick={() => navigate({to:'/'})}
-              className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer absolute left-0 ml-5"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+            onClick={() => navigate({ to: '/' })}
+            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer absolute left-0 ml-5"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
           <h1 className="text-lg font-semibold text-slate-900 dark:text-white text-center">Nueva Transacción</h1>
         </div>
 
@@ -112,6 +129,8 @@ const NewTransaction = () => {
               <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
               <input
                 type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
                 defaultValue={new Date().toISOString().split("T")[0]}
                 className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-500 border-0"
               />
@@ -121,16 +140,16 @@ const NewTransaction = () => {
           {/* BOTONES DE ACCION */}
           <div className="space-y-3 pb-20">
             <button
-              onClick={() => navigate({to: '/'})}
+              onClick={handleSave}
               className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${transactionType === "expense"
-                  ? "bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
-                  : "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                ? "bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
+                : "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                 }`}
             >
               Guardar {transactionType === "expense" ? "Gasto" : "Ingreso"}
             </button>
             <button
-              onClick={() => navigate({to: '/'})}
+              onClick={() => navigate({ to: '/' })}
               className="w-full py-4 px-6 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
             >
               Cancelar

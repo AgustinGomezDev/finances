@@ -3,7 +3,7 @@ import type { Transaction } from "../types/transaction"
 import { formatRelativeDate } from "../utils/date"
 
 interface TransactionItemProps {
-  transaction: Transaction
+    transaction: Transaction
 }
 
 
@@ -17,7 +17,7 @@ const categoryIcons: { [key: string]: any } = {
 }
 
 
-const TransactionItem: React.FC<TransactionItemProps> = ({transaction}) => {
+const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
 
     const IconComponent = categoryIcons[transaction.category] || ShoppingCart
 
