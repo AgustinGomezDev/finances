@@ -6,7 +6,7 @@ const Navigation = () => {
         { id: "/", icon: Home, label: "Inicio" },
         { id: "transacciones", icon: CreditCard, label: "Transacciones" },
         { id: "/presupuestos", icon: PieChart, label: "Presupuestos" },
-        { id: "/", icon: Settings, label: "Configuración" },
+        { id: "/configuracion", icon: Settings, label: "Configuración" },
     ]
 
     return (
@@ -15,7 +15,7 @@ const Navigation = () => {
                 {navItems.map((item) => {
                     // const isActive = currentScreen === item.id
                     return (
-                        <Link to={item.id}>
+                        <Link key={item.id} to={item.id}>
                             <button
                                 key={item.id}
                                 // onClick={() => onNavigate(item.id)}

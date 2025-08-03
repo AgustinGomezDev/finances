@@ -2,8 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, Search } from 'lucide-react'
 import TransactionItem from '../components/TransactionItem'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NewTransactionButton from '../components/NewTransactionButton'
+import { getAllTransactions } from "../services/firebaseService" // asegúrate de la ruta
+import type { Transaction } from '../types/transaction'
 
 export const Route = createFileRoute('/transacciones')({
   component: Transacciones,
@@ -12,67 +14,30 @@ export const Route = createFileRoute('/transacciones')({
 function Transacciones() {
   const navigate = useNavigate()
 
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [loading, setLoading] = useState(true)
+
   const [selectedCategory, setSelectedCategory] = useState("Todas")
   const [amountFilter, setAmountFilter] = useState<"all" | "greater" | "less">("all")
   const [amountValue, setAmountValue] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
 
-  const transactions = [
-    {
-      id: 1,
-      title: "Supermercado Carrefour",
-      amount: -45.5,
-      category: "Alimentación",
-      date: "Hoy",
-      type: "expense" as const,
-      color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-    },
-    {
-      id: 2,
-      title: "Salario Mensual",
-      amount: 2500.0,
-      category: "Trabajo",
-      date: "Ayer",
-      type: "income" as const,
-      color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-    },
-    {
-      id: 3,
-      title: "Netflix Suscripción",
-      amount: -12.99,
-      category: "Entretenimiento",
-      date: "2 días",
-      type: "expense" as const,
-      color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-    },
-    {
-      id: 4,
-      title: "Proyecto Freelance",
-      amount: 350.0,
-      category: "Trabajo",
-      date: "3 días",
-      type: "income" as const,
-      color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-    },
-    {
-      id: 5,
-      title: "Gasolina",
-      amount: -60.0,
-      category: "Transporte",
-      date: "4 días",
-      type: "expense" as const,
-      color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-    },
-    {
-      id: 6,
-      title: "Café Starbucks",
-      amount: -8.5,
-      category: "Café",
-      date: "5 días",
-      type: "expense" as const,
-      color: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-    },
-  ]
+    useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const data = await getAllTransactions()
+        console.log(data)
+        setTransactions(data)
+      } catch (error) {
+        console.error("Error al obtener transacciones:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTransactions()
+  }, [])
+  
 
   const categories = ["Todas", "Alimentación", "Trabajo", "Entretenimiento", "Transporte"]
 
@@ -134,8 +99,8 @@ function Transacciones() {
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${selectedCategory === category
-                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900"
-                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+                ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900"
+                : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
                 }`}
             >
               {category}

@@ -1,14 +1,6 @@
 import { ShoppingCart, Briefcase, Film, Coffee, Car, Home } from "lucide-react"
-
-interface Transaction {
-    id: number
-    title: string
-    amount: number
-    category: string
-    date: string
-    type: string
-    color: string
-}
+import type { Transaction } from "../types/transaction"
+import { formatRelativeDate } from "../utils/date"
 
 interface TransactionItemProps {
   transaction: Transaction
@@ -38,7 +30,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({transaction}) => {
                 <div>
                     <h4 className="font-medium text-slate-900 dark:text-white text-sm">{transaction.title}</h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {transaction.category} • {transaction.date}
+                        {transaction.category} • {formatRelativeDate(transaction.date)}
                     </p>
                 </div>
             </div>

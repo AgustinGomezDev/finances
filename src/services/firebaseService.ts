@@ -1,0 +1,83 @@
+import { firestore as db } from "../config/firebase";
+import { 
+    getDocs,
+    getDoc,
+    query,
+    doc,
+    collection,
+    orderBy,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    Timestamp
+} from "firebase/firestore";
+import type { Transaction } from "../types/transaction"
+
+const transactionsRef = collection(db, "transactions")
+
+// 🔹 Obtener todas las transacciones ordenadas por fecha
+export async function getAllTransactions(): Promise<Transaction[]> {
+  const q = query(collection(db, "transactions"), orderBy("date", "desc"))
+  const snapshot = await getDocs(q)
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data()
+
+    let dateString = ""
+    if (data.date instanceof Timestamp) {
+      dateString = data.date.toDate().toISOString()
+    } else if (typeof data.date === "string") {
+      dateString = data.date
+    } else {
+      console.warn(`Transacción sin campo 'date' válido:`, doc.id, data)
+    }
+
+    return {
+      id: doc.id,
+      title: data.title,
+      amount: data.amount,
+      category: data.category,
+      date: dateString,
+      type: data.type,
+      color: data.color ?? undefined,
+    }
+  })
+}
+
+// 🔹 Obtener una sola transacción por ID
+export const getTransactionById = async (id: string) => {
+  const docSnap = await getDoc(doc(transactionsRef, id))
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() }
+  } else {
+    return null
+  }
+}
+
+// 🔹 Crear nueva transacción
+export const addTransaction = async (data: {
+  type: "income" | "expense",
+  amount: number,
+  category: string,
+  note?: string
+}) => {
+  return await addDoc(transactionsRef, {
+    ...data,
+    createdAt: Timestamp.now()
+  })
+}
+
+// 🔹 Editar transacción existente
+export const updateTransaction = async (id: string, data: Partial<{
+  type: "income" | "expense",
+  amount: number,
+  category: string,
+  note?: string
+}>) => {
+  return await updateDoc(doc(transactionsRef, id), data)
+}
+
+// 🔹 Eliminar transacción
+export const deleteTransaction = async (id: string) => {
+  return await deleteDoc(doc(transactionsRef, id))
+}
