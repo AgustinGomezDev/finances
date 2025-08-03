@@ -28,6 +28,20 @@ export default defineConfig({
             sizes: '256x256',
             type: 'image/webp'
           }
+        ],
+        screenshots: [
+          {
+            src: 'screenshots/mobile.png',
+            sizes: '378x821',
+            type: 'image/png'
+            // sin form_factor: se asume que es móvil
+          },
+          {
+            src: 'screenshots/desktop.png',
+            sizes: '1896x919',
+            type: 'image/png',
+            form_factor: 'wide'
+          }
         ]
       },
       workbox: {
