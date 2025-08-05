@@ -20,9 +20,9 @@ const categoryIcons: { [key: string]: any } = {
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onDelete, editable }) => {
-
     const IconComponent = categoryIcons[transaction.category] || ShoppingCart
-
+    const href = `/editarTransaccion/${transaction.id}`
+    
     return (
         <div className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors relative">
             <div className="flex items-center space-x-3">
@@ -33,7 +33,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onDelete
                     <h4 className="font-medium text-slate-900 dark:text-white text-sm relative">
                         {editable ? (
                             <Link
-                                to={`/editarTransaccion/${transaction.id}`}
+                                to={href}
                                 className="hover:underline relative group"
                             >
                                 {transaction.title}

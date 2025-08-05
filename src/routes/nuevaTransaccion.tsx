@@ -14,7 +14,8 @@ function RouteComponent() {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate({ to: '/autenticacion' });
+      // navigate({ to: '/autenticacion' });
+      return ;
     }
   }, [user, loading, navigate]);
 

@@ -28,7 +28,6 @@ function Transacciones() {
   useEffect(() => {
     async function fetchTransactions() {
       if (!user) {
-        navigate({ to: "/autenticacion" });
         return;
       }
 
