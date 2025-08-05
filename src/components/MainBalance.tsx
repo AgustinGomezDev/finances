@@ -1,9 +1,9 @@
 import { useState } from "react"
 import {
     Plus,
-    TrendingUp,
-    TrendingDown,
-    DollarSign,
+    // TrendingUp,
+    // TrendingDown,
+    // DollarSign,
     Eye,
     ArrowUpRight,
     ArrowDownRight,
@@ -20,11 +20,11 @@ interface MainBalanceProps {
 
 const MainBalance: React.FC<MainBalanceProps> = ({
     totalBalance,
-    changeText,
-    changeType,
+    // changeText,
+    // changeType,
     income,
     expense,
-    saving
+    // saving
 }) => {
     const [isVisible, setIsVisible] = useState(true)
 
@@ -38,19 +38,19 @@ const MainBalance: React.FC<MainBalanceProps> = ({
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <p className="dark:text-gray-400 text-sm">Balance total</p>
-                    <div className="flex items-center gap-5">
-                        <h2 className="text-3xl font-bold w-28">
+                    <div className="flex items-start gap-1">
+                        <h2 className="text-3xl font-bold">
                             {isVisible ? totalBalance + '€' : "••••"}
                         </h2>
 
-                        <div className="flex items-center space-x-2">
+                        {/* <div className="flex items-center space-x-2">
                             {changeType === "up" ? (
                                 <TrendingUp className="w-4 h-4 text-green-300" />
                             ) : (
                                 <TrendingDown className="w-4 h-4 text-red-400" />
                             )}
                             <span className={`text-sm ${changeType === "up" ? 'text-green-300' : 'text-red-400'}`}>{changeText}</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <button
@@ -86,16 +86,16 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <Plus className="size-6 text-gray-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Beneficio</span>
-                    <p className="font-bold">{Number(income) - Number(expense)}€</p>
+                    <p className={`font-bold ${Number((Number(income) - Number(expense)).toFixed(2)) > 0 ? 'text-emerald-500' : 'text-red-500'}`}>{(Number(income) - Number(expense)).toFixed(2)}€</p>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                {/* <div className="flex flex-col items-center justify-center">
                     <div className="bg-gray-600/20 rounded-md p-2">
                         <DollarSign className="size-6 text-gray-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Ahorros</span>
                     <p className="font-bold">{saving}€</p>
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -1,18 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { login, loginWithGoogle, register } from '../services/authService'
 import { useNavigate } from "@tanstack/react-router"
 
-
 export const Route = createFileRoute('/autenticacion')({
     component: RouteComponent,
+    validateSearch: (search) => {
+        return {
+            mode: search.mode === 'register' ? 'register' : 'login'
+        }
+    }
 })
 
 function RouteComponent() {
     const navigate = useNavigate()
+    const { mode } = Route.useSearch()
 
-    const [isLogin, setIsLogin] = useState(true)
+    const [isLogin, setIsLogin] = useState(mode === 'login')
     const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
         name: "",
@@ -23,13 +28,13 @@ function RouteComponent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        
-        if(isLogin === true) {
+
+        if (isLogin === true) {
             await login(formData.email, formData.password)
-            navigate({to: '/'})
+            navigate({ to: '/' })
         } else {
             await register(formData.email, formData.password)
-            
+            navigate({ to: '/' })
         }
     }
 
@@ -39,6 +44,10 @@ function RouteComponent() {
             [e.target.name]: e.target.value,
         })
     }
+
+    useEffect(() => {
+        setIsLogin(mode === 'login')
+    }, [mode])
 
     return (
         <div className='dark:bg-gray-900 min-h-screen p-4'>
