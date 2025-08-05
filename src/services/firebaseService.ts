@@ -134,10 +134,11 @@ export async function getLastTransactions(limitNumber = 5, userId: string): Prom
 }
 
 // 🔹 Obtener una sola transacción por ID
-export const getTransactionById = async (id: string) => {
+export const getTransactionById = async (id: string): Promise<Transaction | null> => {
   const docSnap = await getDoc(doc(transactionsRef, id))
   if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() }
+    // Aquí asumes que la data tiene todos los campos del Transaction
+    return { id: docSnap.id, ...(docSnap.data() as Omit<Transaction, 'id'>) }
   } else {
     return null
   }
@@ -154,10 +155,12 @@ export async function addTransaction(data: Omit<Transaction, "id">) {
 
 // 🔹 Editar transacción existente
 export const updateTransaction = async (id: string, data: Partial<{
-  type: "income" | "expense",
+  type: string,
   amount: number,
   category: string,
-  note?: string
+  title: string,
+  date: string,
+  userId: string
 }>) => {
   return await updateDoc(doc(transactionsRef, id), data)
 }

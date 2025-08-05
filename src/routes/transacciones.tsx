@@ -4,7 +4,7 @@ import { ArrowLeft, Search } from 'lucide-react'
 import TransactionItem from '../components/TransactionItem'
 import { useState, useEffect } from 'react'
 import NewTransactionButton from '../components/NewTransactionButton'
-import { getAllTransactions } from "../services/firebaseService" // asegúrate de la ruta
+import { deleteTransaction, getAllTransactions } from "../services/firebaseService" // asegúrate de la ruta
 import type { Transaction } from '../types/transaction'
 import { useAuthStore } from '../stores/useAuthStore'
 
@@ -77,6 +77,18 @@ function Transacciones() {
     .filter((t) => t.type === "expense")
     .reduce((sum, t) => sum + Math.abs(t.amount), 0)
 
+  const handleDelete = async (transactionId: string) => {
+    if (!user) return
+
+    try {
+      await deleteTransaction(transactionId)
+      setTransactions(prev => prev.filter(t => t.id !== transactionId))
+    } catch (error) {
+      console.error("Error al eliminar la transacción:", error)
+      // Aquí podrías mostrar un toast de error
+    }
+  }
+  
   return (
     <div className="dark:bg-gray-900 min-h-screen">
       <div className='px-4 py-4 max-w-7xl mx-auto'>
@@ -184,7 +196,7 @@ function Transacciones() {
               <div
                 key={`${transaction.id}-${index}`}
               >
-                <TransactionItem transaction={transaction} />
+                <TransactionItem onDelete={handleDelete} transaction={transaction} editable={true} />
               </div>
 
             ))}

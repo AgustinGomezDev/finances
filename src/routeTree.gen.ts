@@ -15,6 +15,7 @@ import { Route as NuevaTransaccionRouteImport } from './routes/nuevaTransaccion'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as AutenticacionRouteImport } from './routes/autenticacion'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EditarTransaccionTransactionIdRouteImport } from './routes/editarTransaccion.$transactionId'
 
 const TransaccionesRoute = TransaccionesRouteImport.update({
   id: '/transacciones',
@@ -46,6 +47,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditarTransaccionTransactionIdRoute =
+  EditarTransaccionTransactionIdRouteImport.update({
+    id: '/editarTransaccion/$transactionId',
+    path: '/editarTransaccion/$transactionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
+  '/editarTransaccion/$transactionId': typeof EditarTransaccionTransactionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +70,7 @@ export interface FileRoutesByTo {
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
+  '/editarTransaccion/$transactionId': typeof EditarTransaccionTransactionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +80,7 @@ export interface FileRoutesById {
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
+  '/editarTransaccion/$transactionId': typeof EditarTransaccionTransactionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +91,7 @@ export interface FileRouteTypes {
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
+    | '/editarTransaccion/$transactionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +100,7 @@ export interface FileRouteTypes {
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
+    | '/editarTransaccion/$transactionId'
   id:
     | '__root__'
     | '/'
@@ -97,6 +109,7 @@ export interface FileRouteTypes {
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
+    | '/editarTransaccion/$transactionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +119,7 @@ export interface RootRouteChildren {
   NuevaTransaccionRoute: typeof NuevaTransaccionRoute
   PresupuestosRoute: typeof PresupuestosRoute
   TransaccionesRoute: typeof TransaccionesRoute
+  EditarTransaccionTransactionIdRoute: typeof EditarTransaccionTransactionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editarTransaccion/$transactionId': {
+      id: '/editarTransaccion/$transactionId'
+      path: '/editarTransaccion/$transactionId'
+      fullPath: '/editarTransaccion/$transactionId'
+      preLoaderRoute: typeof EditarTransaccionTransactionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +183,7 @@ const rootRouteChildren: RootRouteChildren = {
   NuevaTransaccionRoute: NuevaTransaccionRoute,
   PresupuestosRoute: PresupuestosRoute,
   TransaccionesRoute: TransaccionesRoute,
+  EditarTransaccionTransactionIdRoute: EditarTransaccionTransactionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

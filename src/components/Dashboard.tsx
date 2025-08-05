@@ -77,7 +77,7 @@ const Dashboard = () => {
                         <div
                             key={`${transaction.id}-${index}`}
                         >
-                            <TransactionItem transaction={transaction} />
+                            <TransactionItem transaction={transaction} editable={false} />
                         </div>
 
                     ))}
