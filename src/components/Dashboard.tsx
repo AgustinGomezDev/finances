@@ -5,6 +5,7 @@ import TransactionItem from './TransactionItem'
 import { getLastTransactions } from "../services/firebaseService"
 import type { Transaction } from "../types/transaction"
 import { useAuthStore } from "../stores/useAuthStore"
+import { Link } from "@tanstack/react-router"
 
 const Dashboard = () => {
     const user = useAuthStore((state) => state.user);
@@ -47,7 +48,9 @@ const Dashboard = () => {
             <div className='mt-5 md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl  text-white shadow-lg dark:shadow-2xl'>
                 <div className='flex items-center justify-between p-6 border-b dark:border-gray-500'>
                     <p className='text-xl font-medium'>Transacciones recientes</p>
-                    <p className='text-sm dark:text-gray-400'>Ver todas</p>
+                    <Link to="/transacciones">
+                        <p className='text-sm dark:text-gray-400'>Ver todas</p>
+                    </Link>
                 </div>
                 <div>
                     {transactions.map((transaction, index) => (

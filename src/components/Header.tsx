@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { Bell, User } from "lucide-react"
+import { User } from "lucide-react"
 import { useAuthStore } from '../stores/useAuthStore';
 import { logout } from "../services/authService";
 
@@ -9,7 +9,16 @@ const Header = () => {
     return (
         <header className='dark:bg-gray-800 border-b dark:border-gray-700'>
             <div className="flex items-center justify-between container mx-auto px-4 py-5">
-                {user ? <p>Hola, {user.email}</p> : <p>No has iniciado sesión</p>}
+                {user
+                    ? <div>
+                        <p className='text-2xl font-semibold dark:text-white'>MyFinances</p>
+                        <p className='text-sm dark:text-gray-400'>Hola, {user.displayName}</p>
+                    </div>
+                    : <div>
+                        <p className='text-2xl font-semibold dark:text-white'>MyFinances</p>
+                        <p className='text-sm dark:text-gray-400'>Gestiona tus finanzas</p>
+                    </div>
+                }
                 <div className="flex items-center space-x-3">
                     {/* <button className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                         <Bell className="w-6 h-6" />
