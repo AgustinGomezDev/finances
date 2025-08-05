@@ -1,4 +1,4 @@
-import { ShoppingCart, Briefcase, Film, Coffee, Car, Home } from "lucide-react"
+import { ShoppingCart, Briefcase, Film, Car, Home, Croissant, ScanHeart } from "lucide-react"
 import type { Transaction } from "../types/transaction"
 import { formatRelativeDate } from "../utils/date"
 
@@ -8,12 +8,13 @@ interface TransactionItemProps {
 
 
 const categoryIcons: { [key: string]: any } = {
-    Alimentación: ShoppingCart,
+    Alimentación: Croissant,
     Trabajo: Briefcase,
     Entretenimiento: Film,
-    Café: Coffee,
     Transporte: Car,
     Hogar: Home,
+    Salud: ScanHeart,
+    Compras: ShoppingCart,
 }
 
 
