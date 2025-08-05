@@ -24,7 +24,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
     return (
         <div className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors">
             <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${transaction.type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}`}>
+                <div className={`p-2 rounded-lg ${transaction.type === 'income' ? 'text-emerald-500 bg-emerald-900/50' : 'text-red-500 bg-red-900/50'}`}>
                     <IconComponent className="w-4 h-4" />
                 </div>
                 <div>
