@@ -6,12 +6,15 @@ import { useState, useEffect } from 'react'
 import NewTransactionButton from '../components/NewTransactionButton'
 import { getAllTransactions } from "../services/firebaseService" // asegúrate de la ruta
 import type { Transaction } from '../types/transaction'
+import { useAuthStore } from '../stores/useAuthStore'
 
 export const Route = createFileRoute('/transacciones')({
   component: Transacciones,
 })
 
 function Transacciones() {
+  const user = useAuthStore((state) => state.user);
+
   const navigate = useNavigate()
 
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -22,11 +25,15 @@ function Transacciones() {
   const [amountValue, setAmountValue] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
 
-    useEffect(() => {
+  useEffect(() => {
     async function fetchTransactions() {
+      if (!user) {
+        navigate({ to: "/autenticacion" });
+        return;
+      }
+
       try {
-        const data = await getAllTransactions()
-        console.log(data)
+        const data = await getAllTransactions(user.uid)
         setTransactions(data)
       } catch (error) {
         console.error("Error al obtener transacciones:", error)
@@ -36,8 +43,8 @@ function Transacciones() {
     }
 
     fetchTransactions()
-  }, [])
-  
+  }, [user, navigate])
+
   console.log(loading)
 
   const categories = ["Todas", "Alimentación", "Trabajo", "Entretenimiento", "Transporte"]

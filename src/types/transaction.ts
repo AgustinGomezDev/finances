@@ -5,5 +5,5 @@ export type Transaction = {
   category: string
   date: string
   type: string
-  color?: string
+  userId: string
 }

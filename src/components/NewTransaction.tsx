@@ -2,8 +2,13 @@ import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, DollarSign, Tag, FileText, Calendar } from "lucide-react"
 import { useState } from "react"
 import { addTransaction } from "../services/firebaseService"
+import type { User } from 'firebase/auth';
 
-const NewTransaction = () => {
+type NewTransactionProps = {
+  user: User;
+};
+
+const NewTransaction = ({ user }: NewTransactionProps) => {
   const [transactionType, setTransactionType] = useState<"income" | "expense">("expense")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState("")
@@ -26,7 +31,7 @@ const NewTransaction = () => {
       category,
       date,
       type: transactionType,
-      color: transactionType === "income" ? "bg-emerald-500" : "bg-red-500",
+      userId: user.uid
     })
 
     navigate({ to: "/" })

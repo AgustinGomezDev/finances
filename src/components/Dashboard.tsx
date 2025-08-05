@@ -4,17 +4,24 @@ import NewTransactionButton from './NewTransactionButton'
 import TransactionItem from './TransactionItem'
 import { getLastTransactions } from "../services/firebaseService"
 import type { Transaction } from "../types/transaction"
+import { useAuthStore } from "../stores/useAuthStore"
 
 const Dashboard = () => {
+    const user = useAuthStore((state) => state.user);
+
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [loading, setLoading] = useState(true)
 
-
     useEffect(() => {
         async function fetchTransactions() {
+            if (!user) {
+                return;
+            }
+
+
             setLoading(true)
             try {
-                const data = await getLastTransactions(5)
+                const data = await getLastTransactions(5, user.uid)
                 setTransactions(data)
             } catch (error) {
                 console.error("Error al obtener transacciones:", error)
@@ -23,7 +30,7 @@ const Dashboard = () => {
             }
         }
         fetchTransactions()
-    }, [])
+    }, [user])
 
     console.log(loading)
 

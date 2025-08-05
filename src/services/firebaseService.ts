@@ -1,24 +1,35 @@
 import { firestore as db } from "../config/firebase";
-import { 
-    getDocs,
-    getDoc,
-    query,
-    doc,
-    collection,
-    orderBy,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    Timestamp,
-    limit
+import {
+  getDocs,
+  getDoc,
+  query,
+  where,
+  doc,
+  collection,
+  orderBy,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  Timestamp,
+  limit
 } from "firebase/firestore";
 import type { Transaction } from "../types/transaction"
 
 const transactionsRef = collection(db, "transactions")
 
 // 🔹 Obtener todas las transacciones ordenadas por fecha
-export async function getAllTransactions(): Promise<Transaction[]> {
-  const q = query(collection(db, "transactions"), orderBy("date", "desc"))
+export async function getAllTransactions(userId: string): Promise<Transaction[]> {
+  if (!userId) {
+    console.warn("Intento de obtener transacciones sin userId.");
+    return [];
+  }
+
+  const q = query(
+    collection(db, "transactions"),
+    where("userId", "==", userId),
+    orderBy("date", "desc")
+  )
+  
   const snapshot = await getDocs(q)
 
   return snapshot.docs.map((doc) => {
@@ -40,15 +51,16 @@ export async function getAllTransactions(): Promise<Transaction[]> {
       category: data.category,
       date: dateString,
       type: data.type,
-      color: data.color ?? undefined,
+      userId: data.userId,
     }
   })
 }
 
-export async function getLastTransactions(limitNumber = 5): Promise<Transaction[]> {
+export async function getLastTransactions(limitNumber = 5, userId: string): Promise<Transaction[]> {
   const q = query(
     collection(db, "transactions"),
     orderBy("date", "desc"),
+    where("userId", "==", userId),
     limit(limitNumber)
   )
   const snapshot = await getDocs(q)
@@ -72,7 +84,7 @@ export async function getLastTransactions(limitNumber = 5): Promise<Transaction[
       category: data.category,
       date: dateString,
       type: data.type,
-      color: data.color ?? undefined,
+      userId: data.userId
     }
   })
 }
