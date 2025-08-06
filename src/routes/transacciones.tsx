@@ -4,7 +4,7 @@ import { ArrowLeft, Search } from 'lucide-react'
 import TransactionItem from '../components/TransactionItem'
 import { useState, useEffect } from 'react'
 import NewTransactionButton from '../components/NewTransactionButton'
-import { deleteTransaction, getAllTransactions } from "../services/firebaseService" // asegúrate de la ruta
+import { deleteTransaction, getAllTransactions } from "../services/transactionService"
 import type { Transaction } from '../types/transaction'
 import { useAuthStore } from '../stores/useAuthStore'
 

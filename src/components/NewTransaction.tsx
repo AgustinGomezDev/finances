@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, DollarSign, Tag, FileText, Calendar } from "lucide-react"
 import { useState } from "react"
-import { addTransaction } from "../services/firebaseService"
+import { addTransaction } from "../services/transactionService"
 import type { User } from 'firebase/auth';
 
 type NewTransactionProps = {

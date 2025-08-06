@@ -3,7 +3,7 @@ import UpdateTransaction from '../components/UpdateTransaction'
 import { useAuthStore } from '../stores/useAuthStore';
 import { useState, useEffect } from 'react'
 import type { Transaction } from '../types/transaction';
-import { getTransactionById } from '../services/firebaseService';
+import { getTransactionById } from '../services/transactionService';
 
 export const Route = createFileRoute('/editarTransaccion/$transactionId')({
     component: RouteComponent,

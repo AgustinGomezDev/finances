@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import MainBalance from './MainBalance'
 import NewTransactionButton from './NewTransactionButton'
 import TransactionItem from './TransactionItem'
-import { getCurrentMonthTransactions, getUserSummary } from "../services/firebaseService"
+import { getCurrentMonthTransactions } from "../services/transactionService"
+import { getUserSummary } from "../services/userSummaryService"
 import type { Transaction } from "../types/transaction"
 import { useAuthStore } from "../stores/useAuthStore"
 import { Link } from "@tanstack/react-router"
