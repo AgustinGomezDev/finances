@@ -16,6 +16,7 @@ type FirestoreUser = {
   monthlyOthersBudget: number;
   monthlyServicesBudget: number;
   birth: Date | null;
+  email: string;
 };
 
 type AuthState = {

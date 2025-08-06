@@ -18,6 +18,7 @@ type FirestoreUserData = {
   monthlyOthersBudget: number;
   monthlyServicesBudget: number;
   birth: Date | null;
+  email: string;
 };
 
 export function AuthWatcher() {
