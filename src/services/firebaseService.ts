@@ -11,11 +11,34 @@ import {
   updateDoc,
   deleteDoc,
   Timestamp,
-  limit
+  limit,
+  setDoc,
+  increment
 } from "firebase/firestore";
 import type { Transaction } from "../types/transaction"
 
 const transactionsRef = collection(db, "transactions")
+
+async function adjustUserSummary(userId: string, amount: number, type: "income" | "expense") {
+  const summaryRef = doc(db, "summaries", userId)
+
+  try {
+    await updateDoc(summaryRef, {
+      totalIncome: type === "income" ? increment(amount) : increment(0),
+      totalExpense: type === "expense" ? increment(amount) : increment(0),
+    })
+  } catch (error: any) {
+    // Si no existe, lo creamos desde cero
+    if (error.code === "not-found") {
+      await setDoc(summaryRef, {
+        totalIncome: type === "income" ? amount : 0,
+        totalExpense: type === "expense" ? amount : 0,
+      })
+    } else {
+      throw error
+    }
+  }
+}
 
 // 🔹 Obtener todas las transacciones ordenadas por fecha
 export async function getAllTransactions(userId: string): Promise<Transaction[]> {
@@ -29,7 +52,7 @@ export async function getAllTransactions(userId: string): Promise<Transaction[]>
     where("userId", "==", userId),
     orderBy("date", "desc")
   )
-  
+
   const snapshot = await getDocs(q)
 
   return snapshot.docs.map((doc) => {
@@ -151,23 +174,46 @@ export async function addTransaction(data: Omit<Transaction, "id">) {
     date: Timestamp.fromDate(new Date(data.date)),
     createdAt: Timestamp.now(),
   })
+
+  await adjustUserSummary(data.userId, data.amount, data.type);
 }
 
 // 🔹 Editar transacción existente
-export const updateTransaction = async (id: string, data: Partial<{
-  type: string,
-  amount: number,
-  category: string,
-  title: string,
-  date: string,
-  userId: string
-}>) => {
-  return await updateDoc(doc(transactionsRef, id), data)
+export const updateTransaction = async (id: string, newData: Partial<Transaction>) => {
+  const docRef = doc(transactionsRef, id);
+  const snap = await getDoc(docRef);
+
+  if (!snap.exists()) return;
+
+  const prevData = snap.data() as Transaction;
+  await updateDoc(docRef, {
+    ...newData,
+    ...(newData.date ? { date: Timestamp.fromDate(new Date(newData.date)) } : {}),
+  });
+
+  // Restar anterior
+  await adjustUserSummary(prevData.userId, -prevData.amount, prevData.type);
+
+  // Sumar nuevo (solo si cambia el monto o tipo)
+  const updatedAmount = newData.amount ?? prevData.amount;
+  const updatedType = newData.type ?? prevData.type;
+  const updatedUserId = newData.userId ?? prevData.userId;
+
+  await adjustUserSummary(updatedUserId, updatedAmount, updatedType);
 }
 
 // 🔹 Eliminar transacción
 export const deleteTransaction = async (id: string) => {
-  return await deleteDoc(doc(transactionsRef, id))
+  const docRef = doc(transactionsRef, id);
+  const snap = await getDoc(docRef);
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const { userId, amount, type } = data;
+
+  await deleteDoc(docRef);
+  await adjustUserSummary(userId, -amount, type);
 }
 
 export async function getUserSummary(userId: string): Promise<{ totalIncome: number; totalExpense: number }> {

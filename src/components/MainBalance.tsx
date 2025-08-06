@@ -40,7 +40,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                     <p className="dark:text-gray-400 text-sm">Balance total</p>
                     <div className="flex items-start gap-1">
                         <h2 className="text-3xl font-bold">
-                            {isVisible ? totalBalance + '€' : "••••"}
+                            {isVisible ? Number(totalBalance).toFixed(2) + '€' : "••••"}
                         </h2>
 
                         {/* <div className="flex items-center space-x-2">
@@ -70,7 +70,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowUpRight className="size-6 text-green-300" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Ingresos</span>
-                    <p className="font-bold">{income}€</p>
+                    <p className="font-bold">{Number(income).toFixed(2)}€</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -78,7 +78,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowDownRight className="size-6 text-red-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Gastos</span>
-                    <p className="font-bold">{expense}€</p>
+                    <p className="font-bold">{Number(expense).toFixed(2)}€</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
