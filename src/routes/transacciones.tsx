@@ -46,7 +46,7 @@ function Transacciones() {
 
   console.log(loading)
 
-  const categories = ["Todas", "Alimentación", "Trabajo", "Entretenimiento", "Transporte"]
+  const categories = ["Todas", "Alimentación", "Transporte", "Entretenimiento", "Salud", "Compras", "Servicios", "Otros"]
 
   const filteredTransactions = transactions.filter((transaction) => {
     // Filtro por categoría
@@ -155,7 +155,7 @@ function Transacciones() {
         </div>
 
         {(selectedCategory !== "Todas" || amountFilter !== "all" || searchTerm !== "") && (
-          <div className="flex items-center space-x-2 text-sm">
+          <div className="flex items-center space-x-2 text-sm mt-2">
             <span className="text-slate-600 dark:text-slate-400">Filtros activos:</span>
             {selectedCategory !== "Todas" && (
               <span className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-slate-700 dark:text-slate-300">
