@@ -1,16 +1,56 @@
 import { create } from 'zustand';
-import type { User } from 'firebase/auth';
+import type { User as FirebaseAuthUser } from 'firebase/auth';
 
-type AuthState = {
-  user: User | null;
-  loading: boolean;
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
+type FirestoreUser = {
+  uid: string;
+  displayName: string;
+  currency: string;
+  totalIncome: number;
+  totalExpense: number;
+  monthlyBudget: number;
+  birth: Date | null;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+type AuthState = {
+  firebaseUser: FirebaseAuthUser | null;
+  firestoreUser: FirestoreUser | null;
+  loading: boolean;
+  setFirebaseUser: (user: FirebaseAuthUser | null) => void;
+  setFirestoreUser: (user: FirestoreUser | null) => void;
+  setLoading: (loading: boolean) => void;
+  incrementIncome: (amount: number) => void;
+  incrementExpense: (amount: number) => void;
+};
+
+export const useAuthStore = create<AuthState>((set, get) => ({
+  firebaseUser: null,
+  firestoreUser: null,
   loading: true,
-  setUser: (user) => set({ user }),
+  setFirebaseUser: (user) => set({ firebaseUser: user }),
+  setFirestoreUser: (user) => set({ firestoreUser: user }),
   setLoading: (loading) => set({ loading }),
+
+  incrementIncome: (amount: number) => {
+    const currentUser = get().firestoreUser;
+    if (currentUser) {
+      set({
+        firestoreUser: {
+          ...currentUser,
+          totalIncome: currentUser.totalIncome + amount,
+        },
+      });
+    }
+  },
+
+  incrementExpense: (amount: number) => {
+    const currentUser = get().firestoreUser;
+    if (currentUser) {
+      set({
+        firestoreUser: {
+          ...currentUser,
+          totalExpense: currentUser.totalExpense + amount,
+        },
+      });
+    }
+  },
 }));

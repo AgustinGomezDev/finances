@@ -13,7 +13,7 @@ export const Route = createFileRoute('/transacciones')({
 })
 
 function Transacciones() {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.firebaseUser);
 
   const navigate = useNavigate()
 

@@ -4,7 +4,7 @@ import { useAuthStore } from '../stores/useAuthStore';
 import { logout } from "../services/authService";
 
 const Header = () => {
-    const user = useAuthStore((state) => state.user);
+    const user = useAuthStore((state) => state.firestoreUser);
 
     return (
         <header className='dark:bg-gray-800 border-b dark:border-gray-700'>

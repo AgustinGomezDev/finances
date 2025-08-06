@@ -12,13 +12,22 @@ import type { User } from "firebase/auth"
 
 const googleProvider = new GoogleAuthProvider()
 
-export const register = async (email: string, password: string): Promise<User> => {
+export const register = async (email: string, password: string, name: string): Promise<User> => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
 
-  // Crear el summary con valores iniciales en Firestore
-  const userSummaryRef = doc(db, "summaries", user.uid);
-  await setDoc(userSummaryRef, { totalIncome: 0, totalExpense: 0 });
+  const usersRef = doc(db, "users", user.uid);
+  await setDoc(usersRef,
+    {
+      uid: user.uid,
+      totalIncome: 0,
+      totalExpense: 0,
+      birth: null,
+      displayName: name || '',
+      email: email,
+      currency: '',
+      monthlyBudget: 0
+    });
 
   return user;
 };

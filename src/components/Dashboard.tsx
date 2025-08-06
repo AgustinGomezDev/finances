@@ -3,13 +3,13 @@ import MainBalance from './MainBalance'
 import NewTransactionButton from './NewTransactionButton'
 import TransactionItem from './TransactionItem'
 import { getCurrentMonthTransactions } from "../services/transactionService"
-import { getUserSummary } from "../services/userSummaryService"
+// import { getUserSummary } from "../services/userSummaryService"
 import type { Transaction } from "../types/transaction"
 import { useAuthStore } from "../stores/useAuthStore"
 import { Link } from "@tanstack/react-router"
 
 const Dashboard = () => {
-    const user = useAuthStore((state) => state.user);
+    const user = useAuthStore((state) => state.firestoreUser);
 
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [loading, setLoading] = useState(true)
@@ -26,8 +26,8 @@ const Dashboard = () => {
             setLoading(true);
             try {
                 const allCurrentMonth = await getCurrentMonthTransactions(user.uid);
-                const summary = await getUserSummary(user.uid);
-                if (summary) setUserSummary(summary);
+                // const summary = await getUserSummary(user.uid);
+                setUserSummary({ totalExpense: user.totalExpense, totalIncome: user.totalIncome });
 
                 const income = allCurrentMonth
                     .filter((t) => t.type === "income")

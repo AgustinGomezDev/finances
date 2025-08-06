@@ -8,7 +8,7 @@ export const Route = createFileRoute('/nuevaTransaccion')({
 })
 
 function RouteComponent() {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.firebaseUser);
   const loading = useAuthStore((state) => state.loading);
   const navigate = useNavigate();
 

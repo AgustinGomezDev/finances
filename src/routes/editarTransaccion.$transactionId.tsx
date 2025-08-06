@@ -11,7 +11,7 @@ export const Route = createFileRoute('/editarTransaccion/$transactionId')({
 
 function RouteComponent() {
     const { transactionId } = Route.useParams()
-    const user = useAuthStore((state) => state.user);
+    const user = useAuthStore((state) => state.firebaseUser);
 
     const [transaction, setTransaction] = useState<Transaction | null>(null)
     const [loading, setLoading] = useState(true)

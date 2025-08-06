@@ -33,7 +33,7 @@ function RouteComponent() {
             await login(formData.email, formData.password)
             navigate({ to: '/' })
         } else {
-            await register(formData.email, formData.password)
+            await register(formData.email, formData.password, formData.name)
             navigate({ to: '/' })
         }
     }
