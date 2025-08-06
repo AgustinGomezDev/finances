@@ -10,6 +10,13 @@ type FirestoreUserData = {
   totalIncome: number;
   totalExpense: number;
   monthlyBudget: number;
+  monthlyFoodBudget: number;
+  monthlyEntertainmentBudget: number;
+  monthlyTransportBudget: number;
+  monthlyHealthBudget: number;
+  monthlyShoppingBudget: number;
+  monthlyOthersBudget: number;
+  monthlyServicesBudget: number;
   birth: Date | null;
 };
 
