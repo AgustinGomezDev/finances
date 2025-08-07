@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { Home, CreditCard, PieChart, Settings } from "lucide-react"
+import { Home, CreditCard, PieChart, Goal } from "lucide-react"
 
 const Navigation = () => {
     const location = useLocation()
@@ -8,7 +8,8 @@ const Navigation = () => {
         { id: "/", icon: Home, label: "Inicio" },
         { id: "/transacciones", icon: CreditCard, label: "Transacciones" },
         { id: "/presupuestos", icon: PieChart, label: "Presupuestos" },
-        { id: "/configuracion", icon: Settings, label: "Configuración" },
+        { id: "/metas", icon: Goal, label: "Metas" },
+        // { id: "/configuracion", icon: Settings, label: "Configuración" },
     ]
 
     return (

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransaccionesRouteImport } from './routes/transacciones'
 import { Route as PresupuestosRouteImport } from './routes/presupuestos'
 import { Route as NuevaTransaccionRouteImport } from './routes/nuevaTransaccion'
+import { Route as MetasRouteImport } from './routes/metas'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as AutenticacionRouteImport } from './routes/autenticacion'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,6 +31,11 @@ const PresupuestosRoute = PresupuestosRouteImport.update({
 const NuevaTransaccionRoute = NuevaTransaccionRouteImport.update({
   id: '/nuevaTransaccion',
   path: '/nuevaTransaccion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MetasRoute = MetasRouteImport.update({
+  id: '/metas',
+  path: '/metas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracionRoute = ConfiguracionRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/autenticacion': typeof AutenticacionRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/metas': typeof MetasRoute
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/autenticacion': typeof AutenticacionRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/metas': typeof MetasRoute
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/autenticacion': typeof AutenticacionRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/metas': typeof MetasRoute
   '/nuevaTransaccion': typeof NuevaTransaccionRoute
   '/presupuestos': typeof PresupuestosRoute
   '/transacciones': typeof TransaccionesRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/'
     | '/autenticacion'
     | '/configuracion'
+    | '/metas'
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/'
     | '/autenticacion'
     | '/configuracion'
+    | '/metas'
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/'
     | '/autenticacion'
     | '/configuracion'
+    | '/metas'
     | '/nuevaTransaccion'
     | '/presupuestos'
     | '/transacciones'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AutenticacionRoute: typeof AutenticacionRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
+  MetasRoute: typeof MetasRoute
   NuevaTransaccionRoute: typeof NuevaTransaccionRoute
   PresupuestosRoute: typeof PresupuestosRoute
   TransaccionesRoute: typeof TransaccionesRoute
@@ -143,6 +156,13 @@ declare module '@tanstack/react-router' {
       path: '/nuevaTransaccion'
       fullPath: '/nuevaTransaccion'
       preLoaderRoute: typeof NuevaTransaccionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/metas': {
+      id: '/metas'
+      path: '/metas'
+      fullPath: '/metas'
+      preLoaderRoute: typeof MetasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracion': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutenticacionRoute: AutenticacionRoute,
   ConfiguracionRoute: ConfiguracionRoute,
+  MetasRoute: MetasRoute,
   NuevaTransaccionRoute: NuevaTransaccionRoute,
   PresupuestosRoute: PresupuestosRoute,
   TransaccionesRoute: TransaccionesRoute,

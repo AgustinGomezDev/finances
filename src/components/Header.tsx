@@ -35,7 +35,7 @@ const Header = () => {
                             {/* Dropdown Menu */}
                             <div className="cursor-pointer absolute right-0 top-full w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible hover:opacity-100 hover:visible transition-all duration-200 z-50">
                                 <div className="p-2">
-                                    <button className="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors cursor-pointer">Configuración</button>
+                                    <Link to="/configuracion" className="block w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors cursor-pointer">Configuración</Link>
                                     <button onClick={() => logout()} className="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors cursor-pointer">Cerrar Sesión</button>
                                 </div>
                             </div>
