@@ -26,7 +26,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
     expense,
     // saving
 }) => {
-    const [isVisible, setIsVisible] = useState(true)
+    const [isVisible, setIsVisible] = useState(false)
 
 
     const onToggleVisibility = () => {
@@ -40,7 +40,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                     <p className="dark:text-gray-400 text-sm">Balance total</p>
                     <div className="flex items-start gap-1">
                         <h2 className="text-3xl font-bold">
-                            {isVisible ? Number(totalBalance).toFixed(2) + '€' : "••••"}
+                            {isVisible ? Number(totalBalance).toFixed(2) + '€' : "• • • •"}
                         </h2>
 
                         {/* <div className="flex items-center space-x-2">
