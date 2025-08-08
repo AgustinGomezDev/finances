@@ -8,6 +8,7 @@ import {
     ArrowUpRight,
     ArrowDownRight,
 } from "lucide-react"
+import { formatCurrency } from "../utils/formatCurrency"
 
 interface MainBalanceProps {
     totalBalance: string | number
@@ -33,6 +34,8 @@ const MainBalance: React.FC<MainBalanceProps> = ({
         setIsVisible((prev) => !prev)
     }
 
+    const netProfit = Number(income) - Number(expense)
+
     return (
         <div className="md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl p-6 text-white shadow-lg dark:shadow-2xl">
             <div className="flex items-center justify-between mb-4">
@@ -40,7 +43,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                     <p className="dark:text-gray-400 text-sm">Balance total</p>
                     <div className="flex items-start gap-1">
                         <h2 className="text-3xl font-bold">
-                            {isVisible ? Number(totalBalance).toFixed(2) + '€' : "• • • •"}
+                            {isVisible ? formatCurrency(Number(totalBalance)) : "• • • •"}
                         </h2>
 
                         {/* <div className="flex items-center space-x-2">
@@ -70,7 +73,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowUpRight className="size-6 text-green-300" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Ingresos</span>
-                    <p className="font-bold">{Number(income).toFixed(2)}€</p>
+                    <p className="font-bold">{isVisible ? formatCurrency(Number(income)) : "•••"}</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -78,7 +81,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowDownRight className="size-6 text-red-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Gastos</span>
-                    <p className="font-bold">{Number(expense).toFixed(2)}€</p>
+                    <p className="font-bold">{isVisible ? formatCurrency(Number(expense)) : "•••"}</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -86,7 +89,9 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <Plus className="size-6 text-gray-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Beneficio</span>
-                    <p className={`font-bold ${Number((Number(income) - Number(expense)).toFixed(2)) > 0 ? 'text-emerald-500' : 'text-red-500'}`}>{(Number(income) - Number(expense)).toFixed(2)}€</p>
+                    <p className={`font-bold ${netProfit > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                        {isVisible ? formatCurrency(netProfit) : "•••"}
+                    </p>
                 </div>
 
                 {/* <div className="flex flex-col items-center justify-center">

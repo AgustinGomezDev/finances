@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/useAuthStore'
 import { createGoal, deleteGoal, getUsersGoals, updateGoal } from '../services/goalsService'
 import type { Goal } from '../types/goal'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export const Route = createFileRoute('/metas')({
   component: RouteComponent,
@@ -181,7 +182,7 @@ function RouteComponent() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{meta.title}</h3>
-                      <p className='text-sm text-slate-600 dark:text-slate-400'>{meta.progress}€ de {meta.goal}€</p>
+                      <p className='text-sm text-slate-600 dark:text-slate-400'>{formatCurrency(meta.progress)} de {formatCurrency(meta.goal)}</p>
                     </div>
                   </div>
                   <div className='text-right -space-y-3'>
@@ -191,7 +192,7 @@ function RouteComponent() {
                 </div>
                 <div className='flex justify-between mb-1'>
                   <span className='text-sm text-slate-600 dark:text-slate-400'>Progreso</span>
-                  <span className='text-sm text-slate-600 dark:text-slate-400'>Restante {meta.goal - meta.progress}€</span>
+                  <span className='text-sm text-slate-600 dark:text-slate-400'>Restante {formatCurrency(meta.goal - meta.progress)}</span>
                 </div>
                 <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
                   <div

@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/useAuthStore';
 import { useEffect, useState } from 'react';
 import { getCurrentMonthTransactions } from '../services/transactionService';
 import type { Transaction } from '../types/transaction'
+import { formatCurrency } from '../utils/formatCurrency';
 
 export const Route = createFileRoute('/presupuestos')({
     component: RouteComponent,
@@ -184,7 +185,7 @@ function RouteComponent() {
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Presupuesto Mensual</p>
-                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{user.monthlyBudget.toFixed(2)}€</h2>
+                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{formatCurrency(user.monthlyBudget)}</h2>
                         </div>
                         <div className="flex items-center justify-center w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-lg">
                             <Target className="w-6 h-6 text-slate-600 dark:text-slate-400" />
@@ -192,7 +193,7 @@ function RouteComponent() {
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex-1">
-                            <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">Gastado: {spent.toFixed(2)}€</p>
+                            <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">Gastado: {formatCurrency(spent)}</p>
                             <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2">
                                 <div
                                     className="bg-slate-900 dark:bg-white rounded-full h-2 transition-all duration-500"
@@ -222,7 +223,7 @@ function RouteComponent() {
                                     </div>
                                     <div>
                                         <h4 className="font-semibold text-slate-900 dark:text-white">{budget.category}</h4>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">{budget.spent}€ de {budget.limit}€</p>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(budget.spent)} de {formatCurrency(budget.limit)}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -237,7 +238,7 @@ function RouteComponent() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-slate-600 dark:text-slate-400">Progreso</span>
                                     <span className={`font-medium ${getBudgetColor(budget.spent, budget.limit)}`}>
-                                        {(budget.limit - budget.spent).toFixed(2)}€ restante
+                                        {formatCurrency(budget.limit - budget.spent)} restante
                                     </span>
                                 </div>
                                 <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2">
@@ -260,12 +261,12 @@ function RouteComponent() {
                     </div>
                     <div className="col-span-2 bg-white dark:bg-gray-800 rounded-xl p-4 border border-slate-200 dark:border-gray-500 flex items-center gap-5 md:gap-10 lg:gap-20 place-content-center text-center">
                         <div>
-                            <div className="text-2xl font-bold text-black dark:text-white">{totalBudget.toFixed(0)}€</div>
+                            <div className="text-2xl font-bold text-black dark:text-white">{formatCurrency(totalBudget)}</div>
                             <div className="text-sm text-slate-600 dark:text-slate-400">Total asignado</div>
                         </div>
                         <div>
                             <div className={`text-2xl font-bold  ${user.monthlyBudget - totalBudget <= 0 ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'}`}>
-                                {(user.monthlyBudget - totalBudget).toFixed(0)}€
+                                {formatCurrency(user.monthlyBudget - totalBudget)}
                             </div>
                             <div className="text-sm text-slate-600 dark:text-slate-400">Resto mensual</div>
                         </div>
