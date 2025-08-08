@@ -73,7 +73,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowUpRight className="size-6 text-green-300" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Ingresos</span>
-                    <p className="font-bold">{isVisible ? formatCurrency(Number(income)) : "•••"}</p>
+                    <p className="font-bold">{isVisible ? formatCurrency(Number(income)) : "• • •"}</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -81,7 +81,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                         <ArrowDownRight className="size-6 text-red-400" />
                     </div>
                     <span className="dark:text-gray-400 text-sm">Gastos</span>
-                    <p className="font-bold">{isVisible ? formatCurrency(Number(expense)) : "•••"}</p>
+                    <p className="font-bold">{isVisible ? formatCurrency(Number(expense)) : "• • •"}</p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -90,7 +90,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                     </div>
                     <span className="dark:text-gray-400 text-sm">Beneficio</span>
                     <p className={`font-bold ${netProfit > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                        {isVisible ? formatCurrency(netProfit) : "•••"}
+                        {isVisible ? formatCurrency(netProfit) : "• • •"}
                     </p>
                 </div>
 
