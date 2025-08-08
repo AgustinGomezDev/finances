@@ -1,4 +1,4 @@
-import { Trash, ShoppingCart, Briefcase, Film, Car, Home, Croissant, ScanHeart } from "lucide-react"
+import { Trash, ShoppingCart, Briefcase, Film, Car, Home, Croissant, ScanHeart, PiggyBank } from "lucide-react"
 import type { Transaction } from "../types/transaction"
 import { formatRelativeDate } from "../utils/date"
 import { Link } from '@tanstack/react-router'
@@ -12,12 +12,13 @@ interface TransactionItemProps {
 
 const categoryIcons: { [key: string]: any } = {
     Alimentación: Croissant,
-    Trabajo: Briefcase,
+    Salario: Briefcase,
     Entretenimiento: Film,
     Transporte: Car,
     Hogar: Home,
     Salud: ScanHeart,
     Compras: ShoppingCart,
+    Ahorro: PiggyBank
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onDelete, editable }) => {
@@ -27,7 +28,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onDelete
     return (
         <div className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors relative">
             <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${transaction.type === 'income' ? 'text-emerald-500 bg-emerald-900/50' : 'text-red-500 bg-red-900/50'}`}>
+                <div
+                    className={`p-2 rounded-lg ${transaction.category === "Ahorro"
+                            ? "text-amber-500 bg-amber-900/50"
+                            : transaction.type === "income"
+                                ? "text-emerald-500 bg-emerald-900/50"
+                                : "text-red-500 bg-red-900/50"
+                        }`}
+                >
                     <IconComponent className="w-4 h-4" />
                 </div>
                 <div>
@@ -54,9 +62,13 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onDelete
             </div>
             <div className="text-right">
                 <p
-                    className={`font-semibold text-sm ${transaction.type === "income"
+                    className={`font-semibold text-sm ${transaction.category === "Ahorro"
+                        ? "text-amber-600 dark:text-amber-400"
+                        : transaction.type === "income"
                             ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-red-600 dark:text-red-400"
+                            : transaction.type === "expense"
+                                ? "text-red-600 dark:text-red-400"
+                                : ""
                         }`}
                 >
                     {transaction.type === "income" ? "+" : "-"}

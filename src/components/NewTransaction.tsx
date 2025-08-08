@@ -16,7 +16,7 @@ const NewTransaction = ({ user }: NewTransactionProps) => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
 
   const categories = {
-    expense: ["Alimentación", "Transporte", "Entretenimiento", "Salud", "Compras", "Servicios", "Otros"],
+    expense: ["Alimentación", "Transporte", "Entretenimiento", "Salud", "Compras", "Servicios", "Otros", "Ahorro"],
     income: ["Salario", "Freelance", "Inversiones", "Ventas", "Bonos", "Otros"],
   }
 
