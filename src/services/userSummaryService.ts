@@ -1,6 +1,5 @@
 import { firestore as db } from "../config/firebase";
 import {
-  getDoc,
   doc,
   updateDoc,
   setDoc,
