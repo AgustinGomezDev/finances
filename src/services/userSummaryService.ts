@@ -8,25 +8,29 @@ import {
 } from "firebase/firestore";
 import { useAuthStore } from "../stores/useAuthStore";
 
-export async function getUserSummary(userId: string): Promise<{ totalIncome: number; totalExpense: number }> {
-  if (!userId) {
-    console.warn("Intento de obtener resumen sin userId.");
-    return { totalIncome: 0, totalExpense: 0 };
-  }
+export async function updateUserConfig(userId: string, currency: string,
+  monthlyBudget: number,
+  monthlyFoodBudget: number,
+  monthlyTransportBudget: number,
+  monthlyEntertainmentBudget: number,
+  monthlyShoppingBudget: number,
+  monthlyHealthBudget: number,
+  monthlyServicesBudget: number,
+  monthlyOthersBudget: number,
+) {
+  const userRef = doc(db, "users", userId);
 
-  const userRef = doc(db, "summaries", userId);
-  const userSnap = await getDoc(userRef);
-
-  if (userSnap.exists()) {
-    const data = userSnap.data();
-    return {
-      totalIncome: typeof data.totalIncome === "number" ? data.totalIncome : 0,
-      totalExpense: typeof data.totalExpense === "number" ? data.totalExpense : 0,
-    };
-  } else {
-    console.warn(`No se encontró el documento del usuario con ID ${userId}`);
-    return { totalIncome: 0, totalExpense: 0 };
-  }
+  await updateDoc(userRef, {
+    monthlyBudget,
+    monthlyFoodBudget,
+    monthlyTransportBudget,
+    monthlyEntertainmentBudget,
+    monthlyShoppingBudget,
+    monthlyHealthBudget,
+    monthlyServicesBudget,
+    monthlyOthersBudget,
+    currency,
+  })
 }
 
 export async function adjustUserSummary(userId: string, amount: number, type: "income" | "expense") {
