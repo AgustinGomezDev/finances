@@ -6,6 +6,7 @@ import { getTransactionsByDateRange } from "../services/transactionService"
 import type { Transaction } from '../types/transaction'
 import { formatCurrency } from '../utils/formatCurrency';
 import { formatRelativeDate } from '../utils/date';
+import { motion } from "motion/react"
 
 export const Route = createFileRoute('/presupuestos')({
     component: RouteComponent,
@@ -163,39 +164,54 @@ function RouteComponent() {
                 <div className="space-y-4 mt-2">
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Categorías</h3>
 
-                    {budgetsWithSpent.map((budget, index) => (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-slate-200 dark:border-gray-500" key={index}>
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center space-x-3">
-                                    <div className={`p-3 rounded-lg ${budget.bgColor}`}>
-                                        <span className="text-xl">{budget.icon}</span>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-slate-900 dark:text-white">{budget.category}</h4>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(budget.spent)} de {formatCurrency(budget.limit)}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    {getStatusIcon(budget.spent, budget.limit)}
-                                    <span className={`font-semibold ${getBudgetColor(budget.spent, budget.limit)}`}>
-                                        {getProgressPercentage(budget.spent, budget.limit).toFixed(0)}%
-                                    </span>
-                                </div>
-                            </div>
+                    {budgetsWithSpent.map((budget, index) => {
+                        const progress = getProgressPercentage(budget.spent, budget.limit)
 
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-slate-600 dark:text-slate-400">Progreso</span>
-                                    <span className={`font-medium ${getBudgetColor(budget.spent, budget.limit)}`}>
-                                        {formatCurrency(budget.limit - budget.spent)} {budget.limit < budget.spent ? 'excedido' : 'restante'}
-                                    </span>
+                        return (
+                            <motion.div
+                                className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-slate-200 dark:border-gray-500"
+                                key={index}
+                                initial={{ opacity: 0, y: -50 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ type: "spring", stiffness: 120, damping: 20, delay: index * 0.1 }}
+                            >
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center space-x-3">
+                                        <div className={`p-3 rounded-lg ${budget.bgColor}`}>
+                                            <span className="text-xl">{budget.icon}</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900 dark:text-white">{budget.category}</h4>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(budget.spent)} de {formatCurrency(budget.limit)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        {getStatusIcon(budget.spent, budget.limit)}
+                                        <span className={`font-semibold ${getBudgetColor(budget.spent, budget.limit)}`}>
+                                            {getProgressPercentage(budget.spent, budget.limit).toFixed(0)}%
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2">
-                                    <div style={{ width: `${getProgressPercentage(budget.spent, budget.limit)}%` }} className={`${budget.color} rounded-full h-2 transition-all duration-500`}></div>
+
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-600 dark:text-slate-400">Progreso</span>
+                                        <span className={`font-medium ${getBudgetColor(budget.spent, budget.limit)}`}>
+                                            {formatCurrency(budget.limit - budget.spent)} {budget.limit < budget.spent ? 'excedido' : 'restante'}
+                                        </span>
+                                    </div>
+                                    <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${progress}%` }}
+                                            transition={{ type: "spring", stiffness: 120, damping: 20, delay: index * 0.1 + 0.1 }}
+                                            className={`${budget.color} rounded-full h-2`}
+                                        ></motion.div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    ))}
+                            </motion.div>
+                        )
+                    })}
                 </div>
 
                 {/* QUICK STATS */}

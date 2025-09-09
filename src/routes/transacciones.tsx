@@ -7,6 +7,7 @@ import NewTransactionButton from '../components/NewTransactionButton'
 import { deleteTransaction, getAllTransactions } from "../services/transactionService"
 import type { Transaction } from '../types/transaction'
 import { useAuthStore } from '../stores/useAuthStore'
+import { motion } from "motion/react"
 
 export const Route = createFileRoute('/transacciones')({
   component: Transacciones,
@@ -87,7 +88,7 @@ function Transacciones() {
       // Aquí podrías mostrar un toast de error
     }
   }
-  
+
   return (
     <div className="dark:bg-gray-900 min-h-screen">
       <div className='px-4 py-4 max-w-7xl mx-auto'>
@@ -178,29 +179,54 @@ function Transacciones() {
         <div className="grid grid-cols-2 gap-4 pt-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4  border-slate-200 dark:border-gray-500">
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Ingresos</p>
-            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">+{filteredIncome.toFixed(2)}</p>
+            <motion.p
+              className="text-2xl font-bold text-emerald-600 dark:text-emerald-400"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+              +{filteredIncome.toFixed(2)}</motion.p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4  border-slate-200 dark:border-gray-500">
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Gastos</p>
-            <p className="text-2xl font-bold text-red-600 dark:text-red-400">-{filteredExpenses.toFixed(2)}</p>
+            <motion.p
+              className="text-2xl font-bold text-red-600 dark:text-red-400"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+              -{filteredExpenses.toFixed(2)}</motion.p>
           </div>
         </div>
 
-        <div className='mt-5 md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl  text-white shadow-lg dark:shadow-2xl mb-20'>
+        <motion.div
+          className='mt-5 md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl  text-white shadow-lg dark:shadow-2xl mb-20'
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        >
           <div className='flex items-center justify-between p-6 border-b dark:border-gray-500'>
             <p className='text-xl font-medium'>Historial completo</p>
           </div>
           <div>
             {filteredTransactions.map((transaction, index) => (
-              <div
+              <motion.div
                 key={`${transaction.id}-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 20,
+                  delay: index * 0.05,
+                }}
               >
                 <TransactionItem onDelete={handleDelete} transaction={transaction} editable={true} />
-              </div>
+              </motion.div>
 
             ))}
           </div>
-        </div>
+        </motion.div>
 
       </div>
       <NewTransactionButton />

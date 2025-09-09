@@ -8,6 +8,7 @@ import { getTransactionsByDateRange } from "../services/transactionService"
 import type { Transaction } from "../types/transaction"
 import { useAuthStore } from "../stores/useAuthStore"
 import { Link } from "@tanstack/react-router"
+import { motion } from "motion/react"
 
 const Dashboard = () => {
     const user = useAuthStore((state) => state.firestoreUser);
@@ -64,32 +65,58 @@ const Dashboard = () => {
 
     return (
         <div className='container mx-auto px-4'>
-            <MainBalance
-                totalBalance={((Number(userSummary.totalIncome) || 0) - (Number(userSummary.totalExpense) || 0)).toFixed(2)}
-                changeText="+12.5%"
-                changeType="up"
-                income={totalMonthIncome}
-                expense={totalMonthExpense}
-                saving="2566.38"
-            />
-            <div className='mt-5 md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl  text-white shadow-lg dark:shadow-2xl'>
+            <motion.div
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+                <MainBalance
+                    totalBalance={((Number(userSummary.totalIncome) || 0) - (Number(userSummary.totalExpense) || 0)).toFixed(2)}
+                    changeText="+12.5%"
+                    changeType="up"
+                    income={totalMonthIncome}
+                    expense={totalMonthExpense}
+                    saving="2566.38"
+                />
+            </motion.div>
+            <motion.div
+                className='mt-5 md:col-span-3 dark:bg-gray-800 border border-gray-500 rounded-2xl  text-white shadow-lg dark:shadow-2xl'
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
                 <div className='flex items-center justify-between p-6 border-b dark:border-gray-500'>
                     <p className='text-xl font-medium'>Transacciones recientes</p>
                     <Link to="/transacciones">
                         <p className='text-sm dark:text-gray-400'>Ver todas</p>
                     </Link>
                 </div>
-                <div>
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                        hidden: {},
+                        visible: { transition: { staggerChildren: 0.1 } },
+                    }}
+                >
                     {transactions.map((transaction, index) => (
-                        <div
+                        <motion.div
                             key={`${transaction.id}-${index}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 120,
+                                damping: 20,
+                                delay: index * 0.1,
+                            }}
                         >
                             <TransactionItem transaction={transaction} editable={false} />
-                        </div>
+                        </motion.div>
 
                     ))}
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
             <NewTransactionButton />
         </div>
     )
