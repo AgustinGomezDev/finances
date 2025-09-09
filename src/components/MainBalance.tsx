@@ -66,7 +66,7 @@ const MainBalance: React.FC<MainBalanceProps> = ({
                 </button>
             </div>
 
-            <p className="mb-2 dark:text-gray-400 text-sm">Este mes</p>
+            <p className="mb-2 dark:text-gray-400 text-sm">Últimos 30 días</p>
             <div className="flex items-center justify-between">
                 <div className="flex flex-col items-center justify-center">
                     <div className="bg-green-600/20 rounded-md p-2">
