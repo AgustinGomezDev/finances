@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AlertTriangle, ArrowLeft, Target } from 'lucide-react'
 import { useAuthStore } from '../stores/useAuthStore';
-import { useEffect, useState } from 'react';
-import { getCurrentMonthTransactions } from '../services/transactionService';
+import { useEffect, useState, useMemo } from 'react';
+import { getTransactionsByDateRange } from "../services/transactionService"
 import type { Transaction } from '../types/transaction'
 import { formatCurrency } from '../utils/formatCurrency';
+import { formatRelativeDate } from '../utils/date';
 
 export const Route = createFileRoute('/presupuestos')({
     component: RouteComponent,
@@ -15,95 +16,17 @@ function RouteComponent() {
     const user = useAuthStore((state) => state.firestoreUser);
 
     const [loading, setLoading] = useState(true)
-    const [spent, setSpent] = useState(0)
     const [transactions, setTransactions] = useState<Transaction[]>([])
 
-    const budgetsCategories = [
-        {
-            id: 1,
-            category: "Alimentación",
-            spent: 320,
-            limit: user?.monthlyFoodBudget || 100,
-            color: "bg-emerald-500",
-            bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
-            icon: "🍽️",
-        },
-        {
-            id: 2,
-            category: "Entretenimiento",
-            spent: 180,
-            limit: user?.monthlyEntertainmentBudget || 100,
-            color: "bg-violet-500",
-            bgColor: "bg-violet-50 dark:bg-violet-900/20",
-            icon: "🎬",
-        },
-        {
-            id: 3,
-            category: "Transporte",
-            spent: 250,
-            limit: user?.monthlyTransportBudget || 100,
-            color: "bg-red-500",
-            bgColor: "bg-red-50 dark:bg-red-900/20",
-            icon: "🚗",
-        },
-        {
-            id: 4,
-            category: "Compras",
-            spent: 150,
-            limit: user?.monthlyShoppingBudget || 100,
-            color: "bg-blue-500",
-            bgColor: "bg-blue-50 dark:bg-blue-700/20",
-            icon: "🛍️",
-        },
-        {
-            id: 5,
-            category: "Salud",
-            spent: 150,
-            limit: user?.monthlyHealthBudget || 100,
-            color: "bg-orange-500",
-            bgColor: "bg-orange-50 dark:bg-orange-700/20",
-            icon: "💊",
-        },
-        {
-            id: 6,
-            category: "Servicios",
-            spent: 150,
-            limit: user?.monthlyServicesBudget || 100,
-            color: "bg-yellow-500",
-            bgColor: "bg-yellow-50 dark:bg-yellow-700/20",
-            icon: "💡",
-        },
-        {
-            id: 7,
-            category: "Otros",
-            spent: 150,
-            limit: user?.monthlyOthersBudget || 100,
-            color: "bg-amber-500",
-            bgColor: "bg-amber-50 dark:bg-amber-700/20",
-            icon: "📦",
-        }
-    ]
-
-    const [budgetsWithSpent, setBudgetsWithSpent] = useState(budgetsCategories);
-
-    const getProgressPercentage = (spent: number, limit: number) => {
-        return Math.min((spent / limit) * 100, 100)
-    }
-
-    const getStatusIcon = (spent: number, limit: number) => {
-        const percentage = (spent / limit) * 100
-        if (percentage >= 100) return <AlertTriangle className="w-4 h-4 text-red-500" />
-        if (percentage >= 80) return <AlertTriangle className="w-4 h-4 text-amber-500" />
-        return null
-    }
-
-    const getBudgetColor = (spent: number, limit: number) => {
-        const percentage = (spent / limit) * 100
-
-        if (percentage >= 80) return 'text-red-600 dark:text-red-400'
-        if (percentage >= 60 && percentage < 80) return 'text-amber-600 dark:text-amber-400'
-        return 'text-emerald-600 dark:text-emerald-400'
-    }
+    const budgetsCategories = useMemo(() => [
+        { id: 1, category: "Alimentación", spent: 0, limit: user?.monthlyFoodBudget || 100, color: "bg-emerald-500", bgColor: "bg-emerald-50 dark:bg-emerald-900/20", icon: "🍽️" },
+        { id: 2, category: "Entretenimiento", spent: 0, limit: user?.monthlyEntertainmentBudget || 100, color: "bg-violet-500", bgColor: "bg-violet-50 dark:bg-violet-900/20", icon: "🎬" },
+        { id: 3, category: "Transporte", spent: 0, limit: user?.monthlyTransportBudget || 100, color: "bg-red-500", bgColor: "bg-red-50 dark:bg-red-900/20", icon: "🚗" },
+        { id: 4, category: "Compras", spent: 0, limit: user?.monthlyShoppingBudget || 100, color: "bg-blue-500", bgColor: "bg-blue-50 dark:bg-blue-700/20", icon: "🛍️" },
+        { id: 5, category: "Salud", spent: 0, limit: user?.monthlyHealthBudget || 100, color: "bg-orange-500", bgColor: "bg-orange-50 dark:bg-orange-700/20", icon: "💊" },
+        { id: 6, category: "Servicios", spent: 0, limit: user?.monthlyServicesBudget || 100, color: "bg-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-700/20", icon: "💡" },
+        { id: 7, category: "Otros", spent: 0, limit: user?.monthlyOthersBudget || 100, color: "bg-amber-500", bgColor: "bg-amber-50 dark:bg-amber-700/20", icon: "📦" }
+    ], [user]);
 
     const budgetFields = [
         'monthlyEntertainmentBudget',
@@ -115,23 +38,22 @@ function RouteComponent() {
         'monthlyTransportBudget',
     ] as const;
 
-    const totalBudget = budgetFields.reduce((sum, field) => {
-        return sum + Number(user?.[field] || 0);
-    }, 0);
+    const totalBudget = useMemo(() => {
+        return budgetFields.reduce((sum, field) => sum + Number(user?.[field] || 0), 0);
+    }, [user]);
 
+    // Fetch transactions
     useEffect(() => {
-        async function fetchMonthTransactions() {
-            if (!user) return;
+        if (!user) return;
+        setLoading(true);
 
-            setLoading(true);
+        const fetchTransactions = async () => {
             try {
-                const currentMonthTransactions = await getCurrentMonthTransactions(user.uid);
-                const totalMonthExpense = currentMonthTransactions
-                    .filter(tx => tx.type === 'expense')
-                    .reduce((sum, tx) => sum + tx.amount, 0);
-
-                setSpent(totalMonthExpense);
-                setTransactions(currentMonthTransactions)
+                const start = new Date();
+                start.setDate(start.getDate() - 30); // los últimos 30 días
+                const end = new Date();
+                const txs = await getTransactionsByDateRange(user.uid, start, end);
+                setTransactions(txs);
             } catch (error) {
                 console.error("Error al obtener transacciones:", error);
             } finally {
@@ -139,34 +61,61 @@ function RouteComponent() {
             }
         }
 
-        fetchMonthTransactions()
-    }, [user])
+        fetchTransactions();
+    }, [user]);
 
-    useEffect(() => {
-        const updated = budgetsCategories.map((budget) => {
-            const totalSpent = transactions
-                .filter(tx => tx.type === 'expense' && tx.category === budget.category)
-                .reduce((sum, tx) => sum + tx.amount, 0);
+    // Calculamos último ingreso y ciclo actual
+    const { lastIncomeDate, currentCycleTransactions } = useMemo(() => {
+        const incomeTxs = transactions
+            .filter(tx => tx.type === 'income')
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-            return {
-                ...budget,
-                spent: totalSpent,
-            };
+        const lastIncome = incomeTxs.length > 0 ? new Date(incomeTxs[0].date) : new Date();
+
+        const cycleTxs = transactions.filter(tx => {
+            const txDate = new Date(tx.date);
+            return txDate >= lastIncome && txDate <= new Date();
         });
 
-        setBudgetsWithSpent(updated);
-    }, [transactions])
+        return { lastIncomeDate: lastIncome, currentCycleTransactions: cycleTxs };
+    }, [transactions]);
 
-    // Si no hay usuario, mostramos loading o mensaje
-    if (!user) {
-        return (
-            <div className="flex justify-center items-center min-h-screen text-slate-600 dark:text-slate-400">
-                Cargando usuario...
-            </div>
-        )
+    // Gastos totales del ciclo
+    const spent = useMemo(() => {
+        return currentCycleTransactions
+            .filter(tx => tx.type === 'expense')
+            .reduce((sum, tx) => sum + tx.amount, 0);
+    }, [currentCycleTransactions]);
+
+    // Gastos por categoría
+    const budgetsWithSpent = useMemo(() => {
+        return budgetsCategories.map(budget => {
+            const totalSpent = currentCycleTransactions
+                .filter(tx => tx.type === 'expense' && tx.category === budget.category)
+                .reduce((sum, tx) => sum + tx.amount, 0);
+            return { ...budget, spent: totalSpent };
+        });
+    }, [currentCycleTransactions, budgetsCategories]);
+
+    const getProgressPercentage = (spent: number, limit: number) => Math.min((spent / limit) * 100, 100)
+    const getStatusIcon = (spent: number, limit: number) => {
+        const pct = (spent / limit) * 100
+        if (pct >= 100) return <AlertTriangle className="w-4 h-4 text-red-500" />
+        if (pct >= 80) return <AlertTriangle className="w-4 h-4 text-amber-500" />
+        return null
+    }
+    const getBudgetColor = (spent: number, limit: number) => {
+        const pct = (spent / limit) * 100
+        if (pct >= 80) return 'text-red-600 dark:text-red-400'
+        if (pct >= 60) return 'text-amber-600 dark:text-amber-400'
+        return 'text-emerald-600 dark:text-emerald-400'
     }
 
-    console.log(loading)
+    if (!user || loading) return (
+        <div className="flex justify-center items-center min-h-screen text-slate-600 dark:text-slate-400">
+            Cargando usuario...
+        </div>
+    )
 
     return (
         <div className='dark:bg-gray-900 min-h-screen'>
@@ -184,7 +133,7 @@ function RouteComponent() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-500">
                     <div className="flex items-center justify-between mb-4">
                         <div>
-                            <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Presupuesto Mensual</p>
+                            <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Presupuesto Mensual <span className='text-xs dark:text-slate-600'>Desde {formatRelativeDate(lastIncomeDate.toString())}</span></p>
                             <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{formatCurrency(user.monthlyBudget)}</h2>
                         </div>
                         <div className="flex items-center justify-center w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-lg">
@@ -238,7 +187,7 @@ function RouteComponent() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-slate-600 dark:text-slate-400">Progreso</span>
                                     <span className={`font-medium ${getBudgetColor(budget.spent, budget.limit)}`}>
-                                        {formatCurrency(budget.limit - budget.spent)} restante
+                                        {formatCurrency(budget.limit - budget.spent)} {budget.limit < budget.spent ? 'excedido' : 'restante'}
                                     </span>
                                 </div>
                                 <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2">
