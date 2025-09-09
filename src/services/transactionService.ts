@@ -100,6 +100,40 @@ export async function getCurrentMonthTransactions(userId: string): Promise<Trans
   });
 }
 
+export async function getTransactionsByDateRange(
+  userId: string,
+  start: Date,
+  end: Date
+): Promise<Transaction[]> {
+  if (!userId) {
+    console.warn("Intento de obtener transacciones sin userId.");
+    return [];
+  }
+
+  const q = query(
+    collection(db, "transactions"),
+    where("userId", "==", userId),
+    where("date", ">=", Timestamp.fromDate(start)),
+    where("date", "<=", Timestamp.fromDate(end)),
+    orderBy("date", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      title: data.title,
+      amount: data.amount,
+      category: data.category,
+      date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date,
+      type: data.type,
+      userId: data.userId,
+    };
+  });
+}
+
 export async function getLastTransactions(limitNumber = 5, userId: string): Promise<Transaction[]> {
   const q = query(
     collection(db, "transactions"),
